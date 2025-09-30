@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 import einops
-from torch import nn.functional as F
+import torch.nn.functional as F
 
 d_model = 128
 p = 113
