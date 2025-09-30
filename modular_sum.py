@@ -20,8 +20,8 @@ def modular_sum(a,b,freqs, *, out_mags=None, out_phases=None, inout_norms=(3.19,
     weights = (torch.cos(out_phases - (n_phases2[...,None,None] - np.pi)) * out_mags).permute(2,0,1)
     ## THE sqrt(2) - 1 BIAS TERM BELOW HAS ALSO BEEN EMPIRICALLY FOUND
     output = einops.einsum(F.relu(a_vec + b_vec + np.sqrt(2) - 1), weights, "freqs d1 ..., freqs d1 d2 -> d2 ...")
-    output *= inout_norms[0]/output.square().mean(-1).sqrt()
-    desired *= inout_norms[1]/desired.square().mean(-1).sqrt()
+    output *= inout_norms[0]/output.square().mean(-1).sqrt().mean()
+    desired *= inout_norms[1]/desired.square().mean(-1).sqrt().mean()
     logits = einops.einsum(output, desired, "d_model p1 p2, d_model p3 -> p1 p2 p3")
     answers = torch.argmax(logits, -1)
     logits = logits.flatten(0,1)
