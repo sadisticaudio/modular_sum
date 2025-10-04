@@ -4,6 +4,13 @@ import einops
 import torch.nn.functional as F
 
 def modular_sum(a,b,freqs,p=113,N=8,D=128, *, mags=None, phases=None, inout_norms=(3.19, 0.101), get_tensors=False):
+    '''
+        This computes modular addition: a + b % p = c and returns c
+        freqs: key frequencies to use that make up the sinusoidal content in the activations
+        mags/phases: these represent the spectrum of the desired (~W_U unembed matrix) output
+        inout_norms: these normalize the final residual stream and the unembed to Neel Nanda's original norms
+        get_tensor: returns all intermediate tensors as well as the answer, c
+    '''
     prange = torch.arange(p)
     if mags is not None or phases is not None: D = mags.size(0) if mags is not None else phases.size(0)
     if mags is None: mags = torch.randn([D, len(freqs)]) / np.sqrt(p/2)
