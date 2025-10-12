@@ -28,6 +28,5 @@ def modular_sum(a,b,freqs,p=113,N=8,D=128, *, mags=None, phases=None, inout_norm
     desired *= inout_norms[1]/desired.square().mean(-1).sqrt().mean()
     logits = einops.einsum(output, desired, "d_model p1 p2, d_model p3 -> p1 p2 p3")
     answers = torch.argmax(logits, -1)
-    logits = logits.flatten(0,1)
     c = answers[a,b].item()
-    return (c, a_vec, b_vec, weights, desired, output, logits, answers) if get_tensors else c
+    return (c, a_vec, b_vec, weights, desired, output, logits.flatten(0,1), answers) if get_tensors else c
