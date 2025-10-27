@@ -12,8 +12,8 @@ def modular_sum(a,b,freqs,p=113,N=8,D=128, *, mags=None, phases=None, inout_norm
         get_tensor: returns all intermediate tensors as well as the answer, c
     '''
     D = mags.size(0) if mags is not None else phases.size(0) if phases is not None else D
-    if mags is None: mags = torch.randn([D, len(freqs)]) / np.sqrt(p/2)
-    if phases is None: phases = torch.rand([D, len(freqs)]) * 2 * np.pi - np.pi
+    if mags is None: mags = 1 + torch.randn([D, len(freqs)])/ len(freqs)
+    if phases is None: phases = 1 + torch.arange(D)[...,None].expand(D, len(freqs)) * freqs[None] * 2 * np.pi / D
     wk_p, wk_n = torch.arange(p) * 2 * np.pi / p, torch.arange(N) * 2 * np.pi / N
     harmonic1 = torch.cos(freqs[...,None,None] * wk_p + np.pi + wk_n[...,None]) # (F,N,p)
     harmonic2 = torch.cos(2 * freqs[...,None,None] * wk_p + 2 * wk_n[...,None]) # (F,N,p)
